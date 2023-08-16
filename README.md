@@ -6,7 +6,7 @@
 
 - [ ] Faça o fork desse repositório para o seu GitHub
 - [ ] Clone o seu repositório em sua máquina
-- [ ] Desenvola seu projeto, fazendo commits a cada alteração e push
+- [ ] Desenvolva seu projeto, fazendo commits a cada alteração e push
 - [ ] Crie um PR (pull request)
 - [ ] Envie o link do pull request que você criou na plataforma da Cubos
 

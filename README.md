@@ -23,9 +23,9 @@ Seu papel é construir uma RESTful API que permita:
 -   [x] Listar contas bancárias
 -   [x] Atualizar os dados do usuário da conta bancária
 -   [x] Excluir uma conta bancária
--   [ ] Depósitar em uma conta bancária
--   [ ] Sacar de uma conta bancária
--   [ ] Transferir valores entre contas bancárias
+-   [x] Depósitar em uma conta bancária
+-   [x] Sacar de uma conta bancária
+-   [x] Transferir valores entre contas bancárias
 -   [ ] Consultar saldo da conta bancária
 -   [ ] Emitir extrato bancário
 

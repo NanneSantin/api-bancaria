@@ -55,9 +55,31 @@ const deletarConta = async (request, response) => {
     return response.status(201).send();
 };
 
+const verificarSaldo = async (request, response) => {
+    const { numero_conta, senha } = request.query;
+
+    if (!(numero_conta && senha)) {
+        return response.status(400).json({ mensagem: "O número da conta e a senha são obrigatórios!" });
+    }
+
+    const contaEncontrada = contas.find((conta) => conta.numero === Number(numero_conta));
+
+    if (!contaEncontrada) {
+        return response.status(400).json({ mensagem: "Conta bancária não encontrada!" });
+    }
+
+    if (contaEncontrada.usuario.senha !== senha) {
+        return response.status(400).json({ mensagem: "Senha inválida!" });
+    }
+
+    return response.status(200).json({ saldo: contaEncontrada.saldo });
+
+};
+
 module.exports = {
     listarContas,
     criarConta,
     atualizarConta,
-    deletarConta
+    deletarConta,
+    verificarSaldo
 };

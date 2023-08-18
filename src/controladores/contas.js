@@ -21,6 +21,21 @@ const atualizarConta = async (request, response) => {
 
     const contaEncontrada = contas.find((conta) => conta.numero === Number(numeroConta));
 
+    if (novosDados.cpf !== contaEncontrada.usuario.cpf) {
+        const cpfEncontrado = contas.find((conta) => conta.usuario.cpf === novosDados.cpf);
+
+        if (cpfEncontrado !== undefined) {
+            return response.status(400).json({ mensagem: "Já existe uma conta com o cpf informado!" });
+        }
+    }
+    if (novosDados.email !== contaEncontrada.usuario.email) {
+        const emailEncontrado = contas.find((conta) => conta.usuario.email === novosDados.email);
+
+        if (emailEncontrado !== undefined) {
+            return response.status(400).json({ mensagem: "Já existe uma conta com o e-mail informado!" });
+        }
+    }
+
     contaEncontrada.usuario = { ...novosDados };
 
     return response.status(201).send();

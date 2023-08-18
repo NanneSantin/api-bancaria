@@ -1,4 +1,4 @@
-const { contas } = require('../dados/bancodedados');
+const { contas, depositos, saques, transferencias } = require('../dados/bancodedados');
 let numero = 1;
 
 const listarContas = async (request, response) => {
@@ -73,7 +73,34 @@ const verificarSaldo = async (request, response) => {
     }
 
     return response.status(200).json({ saldo: contaEncontrada.saldo });
+};
 
+const verificarExtrato = async (request, response) => {
+    const { numero_conta, senha } = request.query;
+
+    if (!(numero_conta && senha)) {
+        return response.status(400).json({ mensagem: "O número da conta e a senha são obrigatórios!" });
+    }
+
+    const contaEncontrada = contas.find((conta) => conta.numero === Number(numero_conta));
+
+    if (!contaEncontrada) {
+        return response.status(400).json({ mensagem: "Conta bancária não localizada!" });
+    }
+
+    if (contaEncontrada.usuario.senha !== senha) {
+        return response.status(400).json({ mensagem: "Senha inválida!" });
+    }
+
+    const historicoDepositos = depositos.filter((deposito) => deposito.numero_conta === numero_conta);
+    const historicoSaques = saques.filter((saque) => saque.numero_conta === numero_conta);
+    const historicoTransferencias = transferencias.filter((transferencia) => transferencia.numero_conta_origem === numero_conta);
+
+    return response.status(200).json({
+        depositos: historicoDepositos,
+        saques: historicoSaques,
+        transferencias: historicoTransferencias
+    });
 };
 
 module.exports = {
@@ -81,5 +108,6 @@ module.exports = {
     criarConta,
     atualizarConta,
     deletarConta,
-    verificarSaldo
+    verificarSaldo,
+    verificarExtrato
 };

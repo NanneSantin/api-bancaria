@@ -6,7 +6,7 @@
 
 - [x] Faça o fork desse repositório para o seu GitHub
 - [x] Clone o seu repositório em sua máquina
-- [ ] Desenvolva seu projeto, fazendo commits a cada alteração e push
+- [x] Desenvolva seu projeto, fazendo commits a cada alteração e push
 - [x] Crie um PR (pull request)
 - [x] Envie o link do pull request que você criou na plataforma da Cubos
 
@@ -26,8 +26,8 @@ Seu papel é construir uma RESTful API que permita:
 -   [x] Depósitar em uma conta bancária
 -   [x] Sacar de uma conta bancária
 -   [x] Transferir valores entre contas bancárias
--   [ ] Consultar saldo da conta bancária
--   [ ] Emitir extrato bancário
+-   [x] Consultar saldo da conta bancária
+-   [x] Emitir extrato bancário
 
 **Importante: Sempre que a validação de uma requisição falhar, responda com código de erro e mensagem adequada à situação, ok?**
 

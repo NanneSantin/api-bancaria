@@ -1,5 +1,5 @@
 const express = require('express');
-const { listarContas, criarConta, atualizarConta, deletarConta, verificarSaldo } = require('./controladores/contas');
+const { listarContas, criarConta, atualizarConta, deletarConta, verificarSaldo, verificarExtrato } = require('./controladores/contas');
 const { validarInsercaoDeDados, valirdarCpfEEmail, validarNumeroConta } = require('./intermediarios');
 const { realizarDepositos, realizarSaque, realizarTransferencias } = require('./controladores/transacoes');
 
@@ -13,5 +13,6 @@ rotas.post('/transacoes/depositar', realizarDepositos);
 rotas.post('/transacoes/sacar', realizarSaque);
 rotas.post('/transacoes/transferir', realizarTransferencias);
 rotas.get('/contas/saldo', verificarSaldo);
+rotas.get('/contas/extrato', verificarExtrato);
 
 module.exports = rotas;

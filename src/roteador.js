@@ -7,7 +7,7 @@ const rotas = express();
 
 rotas.get('/contas', listarContas);
 rotas.post('/contas', validarInsercaoDeDados, valirdarCpfEEmail, criarConta);
-rotas.put('/contas/:numeroConta/usuario', validarNumeroConta, validarInsercaoDeDados, valirdarCpfEEmail, atualizarConta);
+rotas.put('/contas/:numeroConta/usuario', validarNumeroConta, validarInsercaoDeDados, atualizarConta);
 rotas.delete('/contas/:numeroConta', validarNumeroConta, deletarConta);
 rotas.post('/transacoes/depositar', realizarDepositos);
 rotas.post('/transacoes/sacar', realizarSaque);

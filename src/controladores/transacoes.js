@@ -1,4 +1,5 @@
 const { contas, depositos, saques, transferencias } = require('../dados/bancodedados');
+const dateFns = require('date-fns');
 
 const realizarDepositos = async (request, response) => {
     const { numero_conta, valor } = request.body;
@@ -18,9 +19,9 @@ const realizarDepositos = async (request, response) => {
     contaEncontrada.saldo += valor;
 
     const novoDeposito = {
-        data: new Date(),
+        data: dateFns.format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
         numero_conta,
-        valor: valor + contaEncontrada.saldo
+        valor
     }
 
     depositos.push(novoDeposito);
@@ -56,9 +57,9 @@ const realizarSaque = async (request, response) => {
     contaEncontrada.saldo -= valor;
 
     const novoSaque = {
-        data: new Date(),
+        data: dateFns.format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
         numero_conta,
-        valor: contaEncontrada.saldo - valor
+        valor
     }
 
     saques.push(novoSaque);
@@ -98,7 +99,7 @@ const realizarTransferencias = async (request, response) => {
     contaDeDestino.saldo += valor;
 
     const novaTransferencia = {
-        data: new Date(),
+        data: dateFns.format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
         numero_conta_origem,
         numero_conta_destino,
         valor

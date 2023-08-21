@@ -40,12 +40,14 @@ const viewStatement = async (request, response) => {
 
     const historicoDepositos = depositos.filter((deposito) => deposito.numero_conta === numero_conta);
     const historicoSaques = saques.filter((saque) => saque.numero_conta === numero_conta);
-    const historicoTransferencias = transferencias.filter((transferencia) => transferencia.numero_conta_origem === numero_conta);
+    const historicoTransferenciasEnviadas = transferencias.filter((transferencia) => transferencia.numero_conta_origem === numero_conta);
+    const historicoTransferenciasRecebidas = transferencias.filter((transferencia) => transferencia.numero_conta_destino === numero_conta);
 
     return response.status(200).json({
         depositos: historicoDepositos,
         saques: historicoSaques,
-        transferencias: historicoTransferencias
+        transferenciasEnviadas: historicoTransferenciasEnviadas,
+        transferenciasRecebidas: historicoTransferenciasRecebidas
     });
 }
 

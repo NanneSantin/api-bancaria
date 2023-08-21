@@ -1,4 +1,3 @@
-const { contas } = require('./data/database');
 const { findAccount } = require('./controllers/helper_functions');
 
 const validateDataInBody = async (request, response, next) => {

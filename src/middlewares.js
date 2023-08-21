@@ -1,4 +1,5 @@
 const { contas } = require('./data/database');
+const { findAccount } = require('./controllers/helper_functions');
 
 const validateDataInBody = async (request, response, next) => {
     const { nome, cpf, data_nascimento, telefone, email, senha } = request.body;
@@ -28,11 +29,41 @@ const validateDataInBody = async (request, response, next) => {
 
 const validateIdAccount = async (request, response, next) => {
     const { numeroConta } = request.params;
+    const { numero_conta, numero_conta_origem, numero_conta_destino } = request.body;
 
-    const accountFound = contas.find((conta) => conta.numero === Number(numeroConta));
+    if (!numeroConta) {
+        if (!numero_conta) {
+            if (!findAccount(numero_conta_origem)) {
+                return response.status(404).json({ mensagem: "Conta de origem não encontrada." });
+            }
 
-    if (!accountFound) {
-        return response.status(404).json({ mensagem: "Conta bancária não localizada!" });
+            if (!findAccount(numero_conta_destino)) {
+                return response.status(404).json({ mensagem: "Conta de destino não encontrada." });
+            }
+
+            next();
+        } else {
+            if (!findAccount(numero_conta)) {
+                return response.status(404).json({ mensagem: "Conta bancária não localizada!" });
+            }
+
+            next();
+        }
+    } else {
+
+        if (!findAccount(numeroConta)) {
+            return response.status(404).json({ mensagem: "Conta bancária não localizada!" });
+        }
+
+        next();
+    }
+};
+
+const validateValue = (request, response, next) => {
+    const { valor } = request.body;
+
+    if (valor <= 0) {
+        return response.status(400).json({ mensagem: "Valor inválido." });
     }
 
     next();
@@ -40,5 +71,6 @@ const validateIdAccount = async (request, response, next) => {
 
 module.exports = {
     validateDataInBody,
-    validateIdAccount
+    validateIdAccount,
+    validateValue
 };

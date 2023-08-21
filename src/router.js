@@ -1,6 +1,6 @@
 const express = require('express');
 const { listAccounts, createAccount, updateData, removeAccount } = require('./controllers/account_controller');
-const { validateDataInBody, validateIdAccount } = require('./middlewares');
+const { validateDataInBody, validateIdAccount, validateValue } = require('./middlewares');
 const { makeDeposit, withdraw, makeTransfers } = require('./controllers/transaction_controller')
 const { viewStatement, checkBalance } = require('./controllers/account_operations_controller')
 
@@ -11,9 +11,9 @@ routes.get('/contas', listAccounts);
 routes.post('/contas', validateDataInBody, createAccount);
 routes.put('/contas/:numeroConta/usuario', validateIdAccount, validateDataInBody, updateData);
 routes.delete('/contas/:numeroConta', validateIdAccount, removeAccount);
-routes.post('/transacoes/depositar', makeDeposit);
-routes.post('/transacoes/sacar', withdraw);
-routes.post('/transacoes/transferir', makeTransfers);
+routes.post('/transacoes/depositar', validateIdAccount, validateValue, makeDeposit);
+routes.post('/transacoes/sacar', validateIdAccount, validateValue, withdraw);
+routes.post('/transacoes/transferir', validateIdAccount, validateValue, makeTransfers);
 routes.get('/contas/saldo', checkBalance);
 routes.get('/contas/extrato', viewStatement);
 

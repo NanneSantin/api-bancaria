@@ -9,14 +9,6 @@ const makeDeposit = async (request, response) => {
         return response.status(400).json({ mensagem: "O número da conta e o valor são obrigatórios!" });
     }
 
-    if (!findAccount(numero_conta)) {
-        return response.status(404).json({ mensagem: "Conta bancária não localizada!" });
-    }
-
-    if (valor <= 0) {
-        return response.status(400).json({ mensagem: "Valor inválido." });
-    }
-
     const accountFound = findAccount(numero_conta);
 
     accountFound.saldo += valor;
@@ -37,14 +29,6 @@ const withdraw = async (request, response) => {
 
     if (!(numero_conta && valor && senha)) {
         return response.status(400).json({ mensagem: "O número da conta, o valor e a senha são obrigatórios!" });
-    }
-
-    if (!findAccount(numero_conta)) {
-        return response.status(404).json({ mensagem: "Conta bancária não localizada!" });
-    }
-
-    if (valor <= 0) {
-        return response.status(400).json({ mensagem: "Valor inválido." });
     }
 
     const accountFound = findAccount(numero_conta);
@@ -79,19 +63,8 @@ const makeTransfers = async (request, response) => {
     const sourceAccount = findAccount(numero_conta_origem);
     const destinationAccount = findAccount(numero_conta_destino);
 
-    if (!sourceAccount) {
-        return response.status(404).json({ mensagem: "Conta de origem não encontrada." });
-    }
-    if (!destinationAccount) {
-        return response.status(404).json({ mensagem: "Conta de destino não encontrada." });
-    }
-
     if (sourceAccount.usuario.senha !== senha) {
         return response.status(401).json({ mensagem: "Senha inválida." });
-    }
-
-    if (valor <= 0) {
-        return response.status(400).json({ mensagem: "Valor inválido." });
     }
 
     if (sourceAccount.saldo < valor) {

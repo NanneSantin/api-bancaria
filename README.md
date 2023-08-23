@@ -1,594 +1,313 @@
-![](https://i.imgur.com/xG74tOh.png)
 
-# Desafio Módulo 2 - Back-end
+![Logo](https://i.imgur.com/imJqvK5.png)
 
-## Como entregar?
 
-- [x] Faça o fork desse repositório para o seu GitHub
-- [x] Clone o seu repositório em sua máquina
-- [x] Desenvolva seu projeto, fazendo commits a cada alteração e push
-- [x] Crie um PR (pull request)
-- [x] Envie o link do pull request que você criou na plataforma da Cubos
+# API de Banco Digital da Cubos
 
-### ⚠️ Importante: Se o pull request não for criado e enviado na plataforma o feedback não será fornecido e constará como não entregue
+Bem-vind@ à API de Banco Digital da CUBOS!  Esta é uma RESTful API que permite a realização de várias operações bancárias, incluindo criação de contas, depósitos, saques, transferências, consulta de saldo e emissão de extratos.
 
-## Descrição do desafio
+Esta API foi desenvolvida como parte do desafio do Módulo 2 do Curso de Desenvolvimento de Software com foco em back-end da Cubos Academy.
 
-Você acabou de ser contratado pela melhor empresa de tecnologia do mundo: a **CUBOS**.
-Sua primeira tarefa como desenvolvedor é criar uma API para um Banco Digital. Esse será um projeto **piloto**, ou seja, no futuro outras funcionalidades serão implementadas, portanto, dados do banco (nome, agência, etc.) serão imutáveis.
 
-Seu papel é construir uma RESTful API que permita:
+## Índice
 
--   [x] Criar conta bancária
--   [x] Listar contas bancárias
--   [x] Atualizar os dados do usuário da conta bancária
--   [x] Excluir uma conta bancária
--   [x] Depósitar em uma conta bancária
--   [x] Sacar de uma conta bancária
--   [x] Transferir valores entre contas bancárias
--   [x] Consultar saldo da conta bancária
--   [x] Emitir extrato bancário
+- [Funcionalidades](#funcionalidades)
+- [Stacks Utilizadas](#stacks-utilizadas)
+- [Pré-requisitos](#pré-requisitos)
+- [Rodando Localmente](#rodando-localmente)
+- [Documentação da API](#documentação-da-api)
+- [Demonstração](#demonstração)
+- [Fluxogramas](#fluxogramas)
+- [Feedback](#feedback)
 
-**Importante: Sempre que a validação de uma requisição falhar, responda com código de erro e mensagem adequada à situação, ok?**
+## Funcionalidades
 
-**Exemplo:**
+- [Listar contas bancárias](#lista-todas-as-contas-bancárias-cadastradas)
+- [Criar conta bancária](#criar-uma-conta-bancária)
+- [Atualizar os dados do usuário da conta bancária](#atualizar-dados-do-usuário-da-conta-bancária)
+- [Excluir uma conta bancária](#remover-uma-conta-bancária)
+- [Depositar em uma conta bancária](#depositar-em-uma-conta-bancária)
+- [Sacar de uma conta bancária](#sacar-de-uma-conta-bancária)
+- [Transferir valores entre contas bancárias](#transferir-valores-entre-contas-bancárias)
+- [Consultar saldo da conta bancária](#consultar-saldo-da-conta-bancária)
+- [Emitir extrato bancário](#emitir-extrato-bancário)
 
-```javascript
-// Quando é informado um número de conta que não existe:
-// HTTP Status 404
-{
-    "mensagem": "Conta bancária não encontada!"
-}
+**Observação:** todos os valores são inseridos e apresentados em centavos.
+
+ _Clique na funcionalidade para ser redirecionado a documentação do endpoint._
+
+<br>
+
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
+
+## Stacks utilizadas
+
+**Front-end:** Não contemplado
+
+**Back-end:** 
+- Node.js
+- Express
+- Date-fns (para manipulação de datas)
+
+<br>
+
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
+
+## Pré-requisitos
+
+Node.js instalado (versão 12 ou superior).
+
+## Rodando localmente
+
+### Clone o projeto
+
+```bash
+  git clone https://github.com/NanneSantin/api-bancaria-desafio-cubos.git
 ```
 
-## Persistências dos dados
+### Abra o diretório no terminal
 
-Os dados serão persistidos em memória, no objeto existente dentro do arquivo `bancodedados.js`. **Todas as transações e contas bancárias deverão ser inseridas dentro deste objeto, seguindo a estrutura que já existe.**
-
-### Estrutura do objeto no arquivo `bancodedados.js`
-
-```javascript
-{
-    banco: {
-        nome: "Cubos Bank",
-        numero: "123",
-        agencia: "0001",
-        senha: "Cubos123Bank",
-    },
-    contas: [
-        // array de contas bancárias
-    ],
-    saques: [
-        // array de saques
-    ],
-    depositos: [
-        // array de depósitos
-    ],
-    transferencias: [
-        // array de transferências
-    ],
-}
-```
-## Requisitos obrigatórios
-
--   Sua API deve seguir o padrão REST
--   Seu código deve estar organizado, delimitando as responsabilidades de cada arquivo adequadamente. Ou seja, é esperado que ele tenha, no mínimo:
-    -   Um arquivo index.js
-    -   Um arquivo de rotas
-    -   Um pasta com controladores
--   Qualquer valor (dinheiro) deverá ser representado em centavos (Ex.: R$ 10,00 reais = 1000)
--   Evite códigos duplicados. Antes de copiar e colar, pense se não faz sentido esse pedaço de código estar centralizado numa função.
-
-## Status Code
-
-Abaixo, listamos os possíveis ***status code*** esperados como resposta da API.
-
-Obs.: A lista abaixo é para consulta, **não** significa que todos os ***status codes*** precisam necessariamente ser utilizados.
-
-```javascript
-// 200 (OK) = requisição bem sucedida
-// 201 (Created) = requisição bem sucedida e algo foi criado
-// 204 (No Content) = requisição bem sucedida, sem conteúdo no corpo da resposta
-// 400 (Bad Request) = o servidor não entendeu a requisição pois está com uma sintaxe/formato inválido
-// 401 (Unauthorized) = o usuário não está autenticado (logado)
-// 403 (Forbidden) = o usuário não tem permissão de acessar o recurso solicitado
-// 404 (Not Found) = o servidor não pode encontrar o recurso solicitado
-// 500 (Internal Server Error) = falhas causadas pelo servidor
+```bash
+  cd api-bancaria-desafio-cubos-main
 ```
 
-## Endpoints
+### Instale as dependências
 
-### Listar contas bancárias
-
-#### `GET` `/contas?senha_banco=Cubos123Bank`
-
-Esse endpoint deverá listar todas as contas bancárias existentes.
-
--   Você deverá, **OBRIGATORIAMENTE**:
-
-    -   Verificar se a senha do banco foi informada (passado como query params na url)
-    -   Validar se a senha do banco está correta
-
--   **Requisição** - query params (respeitando este nome)
-
-    -   senha_banco
-
--   **Resposta**
-    -   listagem de todas as contas bancárias existentes
-
-#### Exemplo de resposta
-
-```javascript
-// HTTP Status 200 / 201 / 204
-// 2 contas encontradas
-[
-    {
-        "numero": "1",
-        "saldo": 0,
-        "usuario": {
-            "nome": "Foo Bar",
-            "cpf": "00011122233",
-            "data_nascimento": "2021-03-15",
-            "telefone": "71999998888",
-            "email": "foo@bar.com",
-            "senha": "1234"
-        }
-    },
-    {
-        "numero": "2",
-        "saldo": 1000,
-        "usuario": {
-            "nome": "Foo Bar 2",
-            "cpf": "00011122234",
-            "data_nascimento": "2021-03-15",
-            "telefone": "71999998888",
-            "email": "foo@bar2.com",
-            "senha": "12345"
-        }
-    }
-]
-
-// nenhuma conta encontrada
-[]
-```
-```javascript
-// HTTP Status 400 / 401 / 403 / 404
-{
-    "mensagem": "A senha do banco informada é inválida!"
-}
+```bash
+  npm install
 ```
 
-### Criar conta bancária
+### Inicie o servidor
 
-#### `POST` `/contas`
-
-Esse endpoint deverá criar uma conta bancária, onde será gerado um número único para identificação da conta (número da conta).
-
--   Você deverá, **OBRIGATORIAMENTE**:
-
-    -   Criar uma nova conta cujo número é único
-    -   CPF deve ser um campo único.
-    -   E-mail deve ser um campo único.
-    -   Verificar se todos os campos foram informados (todos são obrigatórios)
-    -   Definir o saldo inicial da conta como 0
-
--   **Requisição** - O corpo (body) deverá possuir um objeto com as seguintes propriedades (respeitando estes nomes):
-
-    -   nome
-    -   cpf
-    -   data_nascimento
-    -   telefone
-    -   email
-    -   senha
-
--   **Resposta**
-
-    Em caso de **sucesso**, não deveremos enviar conteúdo no corpo (body) da resposta.  
-    Em caso de **falha na validação**, a resposta deverá possuir ***status code*** apropriado, e em seu corpo (body) deverá possuir um objeto com uma propriedade **mensagem** que deverá possuir como valor um texto explicando o motivo da falha.
-
-#### Exemplo de Requisição
-
-```javascript
-// POST /contas
-{
-    "nome": "Foo Bar 2",
-    "cpf": "00011122234",
-    "data_nascimento": "2021-03-15",
-    "telefone": "71999998888",
-    "email": "foo@bar2.com",
-    "senha": "12345"
-}
+```bash
+  npm run dev
 ```
 
-#### Exemplo de Resposta
+### Teste a API
 
-```javascript
-// HTTP Status 200 / 201 / 204
-// Sem conteúdo no corpo (body) da resposta
-```
-```javascript
-// HTTP Status 400 / 401 / 403 / 404
-{
-    "mensagem": "Já existe uma conta com o cpf ou e-mail informado!"
-}
-```
+A API estará disponível em `http://localhost:3000`. Você pode usar ferramentas como Insomnia ou Postman para testar as diferentes rotas da API.
 
-### Atualizar usuário da conta bancária
+Caso opte em utilizar Insomnia, importe o arquivo `rotas_insomnia` disponível junto com o projeto.
 
-#### `PUT` `/contas/:numeroConta/usuario`
+![demonstracao_insomnia](https://i.imgur.com/owu3zLx.gif)
 
-Esse endpoint deverá atualizar apenas os dados do usuário de uma conta bancária.
 
--   Você deverá, **OBRIGATORIAMENTE**:
+<br>
 
-    -   Verificar se foi passado todos os campos no body da requisição
-    -   Verificar se o numero da conta passado como parametro na URL é válida
-    -   Se o CPF for informado, verificar se já existe outro registro com o mesmo CPF
-    -   Se o E-mail for informado, verificar se já existe outro registro com o mesmo E-mail
-    -   Atualizar os dados do usuário de uma conta bancária
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
 
--   **Requisição** - O corpo (body) deverá possuir um objeto com todas as seguintes propriedades (respeitando estes nomes):
+## Documentação da API
 
-    -   nome
-    -   cpf
-    -   data_nascimento
-    -   telefone
-    -   email
-    -   senha
+### Lista todas as contas bancárias cadastradas
 
--   **Resposta**
-
-    Em caso de **sucesso**, não deveremos enviar conteúdo no corpo (body) da resposta.  
-    Em caso de **falha na validação**, a resposta deverá possuir ***status code*** apropriado, e em seu corpo (body) deverá possuir um objeto com uma propriedade **mensagem** que deverá possuir como valor um texto explicando o motivo da falha.
-
-#### Exemplo de Requisição
-```javascript
-// PUT /contas/:numeroConta/usuario
-{
-    "nome": "Foo Bar 3",
-    "cpf": "99911122234",
-    "data_nascimento": "2021-03-15",
-    "telefone": "71999998888",
-    "email": "foo@bar3.com",
-    "senha": "12345"
-{
+```http
+  GET /contas?senha_banco=Cubos123Bank
 ```
 
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `senha_banco` | `string` | **Obrigatório**. A senha de autenticação do banco. |
 
-#### Exemplo de Resposta
+**Descrição:**
+Este endpoint permite listar todas as contas bancárias cadastradas. Para acessar as informações, é necessário fornecer a senha de autenticação do banco (`senha_banco`) utilizando o parâmetro de consulta na URL (query params).
 
-```javascript
-// HTTP Status 200 / 201 / 204
-// Sem conteúdo no corpo (body) da resposta
-```
-```javascript
-// HTTP Status 400 / 401 / 403 / 404
-{
-    "mensagem": "O CPF informado já existe cadastrado!"
-}
-```
+![fluxo-listar](https://i.imgur.com/gbzR73O.jpg)
 
-### Excluir Conta
+<br>
 
-#### `DELETE` `/contas/:numeroConta`
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
 
-Esse endpoint deve excluir uma conta bancária existente.
+### Criar uma conta bancária
 
--   Você deverá, **OBRIGATORIAMENTE**:
-
-    -   Verificar se o numero da conta passado como parametro na URL é válido
-    -   Permitir excluir uma conta bancária apenas se o saldo for 0 (zero)
-    -   Remover a conta do objeto de persistência de dados.
-
--   **Requisição**
-
-    -   Numero da conta bancária (passado como parâmetro na rota)
-
--   **Resposta**
-
-    Em caso de **sucesso**, não deveremos enviar conteúdo no corpo (body) da resposta.  
-    Em caso de **falha na validação**, a resposta deverá possuir ***status code*** apropriado, e em seu corpo (body) deverá possuir um objeto com uma propriedade **mensagem** que deverá possuir como valor um texto explicando o motivo da falha.
-
-#### Exemplo de Resposta
-
-```javascript
-// HTTP Status 200 / 201 / 204
-// Sem conteúdo no corpo (body) da resposta
-```
-```javascript
-// HTTP Status 400 / 401 / 403 / 404
-{
-    "mensagem": "A conta só pode ser removida se o saldo for zero!"
-}
+```http
+  POST /contas
 ```
 
-### Depositar
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `nome`      | `string` | **Obrigatório**. Nome do titular da conta |
+| `cpf`      | `string` | **Obrigatório**. CPF do titular da conta |
+| `data_nascimento`      | `string` | **Obrigatório**. Data de nascimento do titular da conta |
+| `telefone`      | `string` | **Obrigatório**. Número de telefone do titular da conta |
+| `email`      | `string` | **Obrigatório**. Endereço de email do titular da conta |
+| `senha`      | `string` | **Obrigatório**. Senha para acessar a conta |
 
-#### `POST` `/transacoes/depositar`
+**Descrição:** 
+Este endpoint permite criar uma nova conta bancária. É necessário fornecer os detalhes do titular da conta, incluindo nome, CPF, data de nascimento, telefone, email e senha. O CPF e o email devem ser únicos, ou seja, não podem estar associados a outra conta bancária cadastrada.
 
-Esse endpoint deverá somar o valor do depósito ao saldo de uma conta válida e registrar essa transação.
+![fluxo-criar](https://i.imgur.com/VcaaT8J.jpg)
 
--   Você deverá, **OBRIGATORIAMENTE**:
+<br>
 
-    -   Verificar se o numero da conta e o valor do deposito foram informados no body
-    -   Verificar se a conta bancária informada existe
-    -   Não permitir depósitos com valores negativos ou zerados
-    -   Somar o valor de depósito ao saldo da conta encontrada
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
 
--   **Requisição** - O corpo (body) deverá possuir um objeto com as seguintes propriedades (respeitando estes nomes):
+### Atualizar dados do usuário da conta bancária
 
-    -   numero_conta
-    -   valor
-
--   **Resposta**
-
-    Em caso de **sucesso**, não deveremos enviar conteúdo no corpo (body) da resposta.  
-    Em caso de **falha na validação**, a resposta deverá possuir ***status code*** apropriado, e em seu corpo (body) deverá possuir um objeto com uma propriedade **mensagem** que deverá possuir como valor um texto explicando o motivo da falha.
-
-#### Exemplo de Requisição
-```javascript
-// POST /transacoes/depositar
-{
-	"numero_conta": "1",
-	"valor": 1900
-}
+```http
+  PUT /contas/:numeroConta/usuario
 ```
 
-#### Exemplo de Resposta
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `numeroConta`      | `string` | **Obrigatório**. Número da conta bancária a ser atualizada. |
+| `nome`      | `string` | **Obrigatório**. Novo nome do titular da conta |
+| `cpf`      | `string` | **Obrigatório**. Novo CPF do titular da conta |
+| `data_nascimento`      | `string` | **Obrigatório**. Nova data de nascimento do titular da conta |
+| `telefone`      | `string` | **Obrigatório**. Novo número de telefone do titular da conta |
+| `email`      | `string` | **Obrigatório**. Novo endereço de email do titular da conta |
+| `senha`      | `string` | **Obrigatório**. Nova senha para acessar a conta |
 
-```javascript
-// HTTP Status 200 / 201 / 204
-// Sem conteúdo no corpo (body) da resposta
-```
-```javascript
-// HTTP Status 400 / 401 / 403 / 404
-{
-    "mensagem": "O número da conta e o valor são obrigatórios!"
-}
-```
+**Descrição:** 
+Este endpoint permite atualizar os dados do usuário associados a uma conta bancária específica. É necessário fornecer o número da conta (`numeroConta`) como parâmetro de requisição na URL (request params) e os novos detalhes do titular da conta, incluindo nome, CPF, data de nascimento, telefone, email e senha no body da requisição. 
 
-#### Exemplo do registro de um depósito
+O CPF e o email devem ser únicos, ou seja, não podem estar associados a outra conta bancária cadastrada.
 
-```javascript
-{
-    "data": "2021-08-10 23:40:35",
-    "numero_conta": "1",
-    "valor": 10000
-}
-```
+Todos os dados precisam ser passados, mesmo aqueles que não serão atualizados. Para estes casos, basta repetir o valor anterior.
 
-### Sacar
+![fluxo-atualizar](https://i.imgur.com/WyhCV5T.jpg)
 
-#### `POST` `/transacoes/sacar`
+<br>
 
-Esse endpoint deverá realizar o saque de um valor em uma determinada conta bancária e registrar essa transação.
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
 
--   Você deverá, **OBRIGATORIAMENTE**:
+### Remover uma conta bancária
 
-    -   Verificar se o numero da conta, o valor do saque e a senha foram informados no body
-    -   Verificar se a conta bancária informada existe
-    -   Verificar se a senha informada é uma senha válida para a conta informada
-    -   Verificar se há saldo disponível para saque
-    -   Subtrair o valor sacado do saldo da conta encontrada
-
--   **Requisição** - O corpo (body) deverá possuir um objeto com as seguintes propriedades (respeitando estes nomes):
-
-    -   numero_conta
-    -   valor
-    -   senha
-
--   **Resposta**
-
-    Em caso de **sucesso**, não deveremos enviar conteúdo no corpo (body) da resposta.  
-    Em caso de **falha na validação**, a resposta deverá possuir ***status code*** apropriado, e em seu corpo (body) deverá possuir um objeto com uma propriedade **mensagem** que deverá possuir como valor um texto explicando o motivo da falha.
-
-#### Exemplo de Requisição
-```javascript
-// POST /transacoes/sacar
-{
-	"numero_conta": "1",
-	"valor": 1900,
-    "senha": "123456"
-}
-```
-#### Exemplo de Resposta
-```javascript
-// HTTP Status 200 / 201 / 204
-// Sem conteúdo no corpo (body) da resposta
-```
-```javascript
-// HTTP Status 400 / 401 / 403 / 404
-{
-    "mensagem": "O valor não pode ser menor que zero!"
-}
+```http
+  DELETE /contas/:numeroConta
 ```
 
-#### Exemplo do registro de um saque
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `numeroConta`      | `string` | **Obrigatório**. Número da conta bancária a ser excluída. |
 
-```javascript
-{
-    "data": "2021-08-10 23:40:35",
-    "numero_conta": "1",
-    "valor": 10000
-}
+**Descrição:** 
+Este endpoint permite excluir uma conta bancária. É necessário fornecer o número da conta (`numeroConta`) como parâmetro de requisição na URL (request params).
+
+A conta só pode ser excluída se o saldo for zero.
+
+![fluxo-deletar](https://i.imgur.com/jL72bbB.jpg)
+
+<br>
+
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
+
+### Depositar em uma conta bancária
+
+```http
+  POST /transacoes/depositar
 ```
 
-### Tranferir
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `numero_conta`      | `string` | **Obrigatório**. Número da conta bancária de destino do depósito. |
+| `valor`      | `number` | **Obrigatório**. Valor (em centavos) a ser depositado na conta. |
 
-#### `POST` `/transacoes/transferir`
+**Descrição:** 
+Este endpoint permite fazer um depósito em uma conta bancária específica. É necessário fornecer o número da conta de destino (`numeroConta`) e o valor do depósito em centavos (`valor`) no body da requisição.
 
-Esse endpoint deverá permitir a transferência de recursos (dinheiro) de uma conta bancária para outra e registrar essa transação.
+O valor deve ser maior que zero.
 
--   Você deverá, **OBRIGATORIAMENTE**:
+![fluxo-depositar](https://i.imgur.com/CLCSoOJ.png)
 
-    -   Verificar se o número da conta de origem, de destino, senha da conta de origem e valor da transferência foram informados no body
-    -   Verificar se a conta bancária de origem informada existe
-    -   Verificar se a conta bancária de destino informada existe
-    -   Verificar se a senha informada é uma senha válida para a conta de origem informada
-    -   Verificar se há saldo disponível na conta de origem para a transferência
-    -   Subtrair o valor da transfência do saldo na conta de origem
-    -   Somar o valor da transferência no saldo da conta de destino
+<br>
 
--   **Requisição** - O corpo (body) deverá possuir um objeto com as seguintes propriedades (respeitando estes nomes):
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
 
-    -   numero_conta_origem
-    -   numero_conta_destino
-    -   valor
-    -   senha
+### Sacar de uma conta bancária
 
--   **Resposta**
-
-    Em caso de **sucesso**, não deveremos enviar conteúdo no corpo (body) da resposta.  
-    Em caso de **falha na validação**, a resposta deverá possuir ***status code*** apropriado, e em seu corpo (body) deverá possuir um objeto com uma propriedade **mensagem** que deverá possuir como valor um texto explicando o motivo da falha.
-
-#### Exemplo de Requisição
-```javascript
-// POST /transacoes/transferir
-{
-	"numero_conta_origem": "1",
-	"numero_conta_destino": "2",
-	"valor": 200,
-	"senha": "123456"
-}
-```
-#### Exemplo de Resposta
-
-```javascript
-// HTTP Status 200 / 201 / 204
-// Sem conteúdo no corpo (body) da resposta
-```
-```javascript
-// HTTP Status 400 / 401 / 403 / 404
-{
-    "mensagem": "Saldo insuficiente!"
-}
+```http
+  POST /transacoes/sacar
 ```
 
-#### Exemplo do registro de uma transferência
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `numero_conta`      | `string` | **Obrigatório**. Número da conta bancária de onde será realizado o saque. |
+| `valor`      | `number` | **Obrigatório**. Valor (em centavos) a ser sacado da conta. |
+| `senha`      | `string` | **Obrigatório**. Senha para autenticar a operação do saque. |
 
-```javascript
-{
-    "data": "2021-08-10 23:40:35",
-    "numero_conta_origem": "1",
-    "numero_conta_destino": "2",
-    "valor": 10000
-}
+**Descrição:** 
+Este endpoint permite realizar um saque de uma conta bancária específica. É necessário fornecer o número da conta de destino (`numeroConta`), o valor do saque em centavos (`valor`) e a senha de autenticação da conta em questão (`senha`) no body da requisição.
+
+O valor deve ser maior que zero.
+
+![fluxo-sacar](https://i.imgur.com/uiAroMg.png)
+
+<br>
+
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
+
+### Transferir valores entre contas bancárias
+
+```http
+  POST /transacoes/sacar
 ```
 
-### Saldo
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `numero_conta_origem`      | `string` | **Obrigatório**. Número da conta bancária de origem da transferência. |
+| `numero_conta_destino`      | `string` | **Obrigatório**. Número da conta bancária de destino da transferência. |
+| `valor`      | `number` | **Obrigatório**. Valor (em centavos) a ser sacado da conta. |
+| `senha`      | `string` | **Obrigatório**. Senha para autenticar a operação de transferência. |
 
-#### `GET` `/contas/saldo?numero_conta=123&senha=123`
+**Descrição:** 
+Este endpoint permite transferir valores entre duas contas bancárias. É necessário fornecer o número da conta de origem (`numero_conta_origem`), o número da conta de destino (`numero_conta_destino`), o valor da transferência (`valor`) e a senha de autenticação da conta de origem (`senha`) no body da requisição.
 
-Esse endpoint deverá retornar o saldo de uma conta bancária.
+O valor deve ser maior que zero.
 
--   Você deverá, **OBRIGATORIAMENTE**:
+![fluxo-transferir](https://i.imgur.com/xVuQL4J.jpg)
 
-    -   Verificar se o numero da conta e a senha foram informadas (passado como query params na url)
-    -   Verificar se a conta bancária informada existe
-    -   Verificar se a senha informada é uma senha válida
-    -   Exibir o saldo da conta bancária em questão
+<br>
 
--   **Requisição** - query params
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
 
-    -   numero_conta
-    -   senha
+### Consultar saldo da conta bancária
 
--   **Resposta**
-
-    -   Saldo da conta
-
-#### Exemplo de Resposta
-
-```javascript
-// HTTP Status 200 / 201 / 204
-{
-    "saldo": 13000
-}
-```
-```javascript
-// HTTP Status 400 / 401 / 403 / 404
-{
-    "mensagem": "Conta bancária não encontada!"
-}
+```http
+  GET /contas/saldo
 ```
 
-### Extrato
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `numero_conta`      | `string` | **Obrigatório**. Número da conta bancária para consultar o saldo. |
+| `senha`      | `string` | **Obrigatório**. Senha para autenticar a consulta de saldo. |
 
-#### `GET` `/contas/extrato?numero_conta=123&senha=123`
+**Descrição:** 
+Este endpoint permite consultar o saldo de uma conta bancária específica. É necessário fornecer o número da conta (`numero_conta`) e a senha de autenticação (`senha`) utilizando o parâmetro de consulta na URL (query params).
 
-Esse endpoint deverá listar as transações realizadas de uma conta específica.
+![fluxo-saldo](https://i.imgur.com/5i7YDBi.jpg)
 
--   Você deverá, **OBRIGATORIAMENTE**:
+<br>
 
-    -   Verificar se o numero da conta e a senha foram informadas (passado como query params na url)
-    -   Verificar se a conta bancária informada existe
-    -   Verificar se a senha informada é uma senha válida
-    -   Retornar a lista de transferências, depósitos e saques da conta em questão.
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
 
--   **Requisição** - query params
+### Emitir extrato bancário
 
-    -   numero_conta
-    -   senha
-
--   **Resposta**
-    -   Relatório da conta
-
-#### Exemplo de Resposta
-
-```javascript
-// HTTP Status 200 / 201 / 204
-{
-  "depositos": [
-    {
-      "data": "2021-08-18 20:46:03",
-      "numero_conta": "1",
-      "valor": 10000
-    },
-    {
-      "data": "2021-08-18 20:46:06",
-      "numero_conta": "1",
-      "valor": 10000
-    }
-  ],
-  "saques": [
-    {
-      "data": "2021-08-18 20:46:18",
-      "numero_conta": "1",
-      "valor": 1000
-    }
-  ],
-  "transferenciasEnviadas": [
-    {
-      "data": "2021-08-18 20:47:10",
-      "numero_conta_origem": "1",
-      "numero_conta_destino": "2",
-      "valor": 5000
-    }
-  ],
-  "transferenciasRecebidas": [
-    {
-      "data": "2021-08-18 20:47:24",
-      "numero_conta_origem": "2",
-      "numero_conta_destino": "1",
-      "valor": 2000
-    },
-    {
-      "data": "2021-08-18 20:47:26",
-      "numero_conta_origem": "2",
-      "numero_conta_destino": "1",
-      "valor": 2000
-    }
-  ]
-}
+```http
+  GET /contas/extrato
 ```
 
-```javascript
-// HTTP Status 400 / 401 / 403 / 404
-{
-    "mensagem": "Conta bancária não encontada!"
-}
-```
+| Parâmetro   | Tipo       | Descrição                                   |
+| :---------- | :--------- | :------------------------------------------ |
+| `numero_conta`      | `string` | **Obrigatório**. Número da conta bancária para emitir o extrato. |
+| `senha`      | `string` | **Obrigatório**. Senha para autenticar a emissão do extrato. |
 
-**LEMBRE-SE**: Feito é melhor do que perfeito, mas não faça mal feito!!!
+**Descrição:** 
+Este endpoint permite emitir um extrato bancário para uma conta bancária específica. É necessário fornecer o número da conta (`numero_conta`) e a senha de autenticação (`senha`) utilizando o parâmetro de consulta na URL (query params).
 
-###### tags: `back-end` `módulo 2` `nodeJS` `API REST` `desafio`
+![fluxo-extrato](https://i.imgur.com/zfqAZio.jpg)
+
+<br>
+
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
+
+## Demonstração
+
+<img src='./assets/demonstracao.gif'>
+
+## Feedback
+
+Se você tiver algum feedback, por favor me deixe saber por meio de [elaine.s.santin@gmail.com](mailto:seuemail@example.com).
+
+<br>
+
+> [<img src='./assets/desfazer.png' alt='Retornar para o início' width='15'> Voltar para o menu](#índice)
